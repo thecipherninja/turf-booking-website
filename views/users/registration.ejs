@@ -5,22 +5,12 @@
     <!---- Title Text ---->
 
     <div class="title-text">
-       <div class="title login">
-          Login
-       </div>
        <div class="title signup">
           Signup
        </div>
     </div>
 
     <div class="form-container">
-       <div class="slide-controls">
-          <input type="radio" name="slide" id="login" checked>
-          <input type="radio" name="slide" id="signup">
-          <label for="login" class="slide login">Login</label>
-          <label for="signup" class="slide signup">Signup</label>
-          <div class="slider-tab"></div>
-       </div>
        
        <div class="form-inner">
 
@@ -42,6 +32,9 @@
              <div class="field">
                 <input type="password" name="confirmpassword" minlength="7" maxlength="16" onkeydown="return/[a-z,0-9]/i.test(event.key)" placeholder="Confirm password" required>
              </div>
+             <div class="pass-link">
+               <a href="/login">Already have an account? Login here</a>
+           </div>
              
              <% if(typeof message !== 'undefined') {
                %>
