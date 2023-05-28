@@ -1,7 +1,10 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
-
 const nodemailer = require("nodemailer");
+const randomstring = require("randomstring");
+
+const config = require("../config/config");
+
 
 const securePassword = async(password)=>{
     try {
@@ -21,13 +24,13 @@ const sendVerifyMail = async(name, email, user_id)=>{
             secure: false,
             requireTLS: true,
             auth: {
-                user: 'theturf.devteam@gmail.com',
-                pass: 'pbtpldtjayfaqycv'
+                user: config.emailUser,
+                pass: config.emailPassword
             }
         });
 
         const mailOptions = {
-            from: 'theturf.devteam@gmail.com',
+            from: config.emailUser,
             to: email,
             subject: 'Verification Mail',
             text: '<p>Hi! ' + name + ', please click here to <a href="http://localhost:5002/verify?id='+user_id+'">Verify</a> your mail.</p>'
@@ -137,6 +140,106 @@ const loadHome = async(req, res)=>{
     }
 }
 
+const userLogout = async(req, res)=>{
+    try {
+        req.session.destroy();
+        res.redirect('/');
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const forgotLoad = async(req, res)=>{
+    try {
+        res.render('forgot');
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const forgotVerify = async(req, res)=>{
+    try {
+        const email = req.body.email;
+        const userData = await User.findOne({email: email});
+
+        if (userData) {
+            if(userData.is_verified === 0) {
+                res.render('forgot', {message: "Please verify your mail."});
+            } else {
+                const randomString = randomstring.generate();
+                const updatedData = await User.updateOne({email: email}, {$set: {token: randomString}});
+                sendResetMail(userData.name, userData.email, randomString);
+                res.render('forgot', {message: "Email has been sent to reset your passord."})
+            }
+        } else {
+            res.render('forgot',{message: "User email is incorect."});
+        }
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const sendResetMail = async(name, email, token)=>{
+    try {
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            requireTLS: true,
+            auth: {
+                user: config.emailUser,
+                pass: config.emailPassword
+            }
+        });
+
+        const mailOptions = {
+            from: config.emailUser,
+            to: email,
+            subject: 'Password Reset',
+            text: '<p>Hi! ' + name + ', please click here to <a href="http://localhost:5002/forgotpassword?token='+token+'">Reset</a> your password.</p>'
+        }
+
+        transporter.sendMail(mailOptions, function(error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("Email has been sent:- ", info.response);
+            }
+        })
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const forgotPasswordLoad = async(req, res)=>{
+    try {
+        const token = req.query.token;
+        const tokenData = await User.findOne({token: token});
+        if (tokenData) {
+            res.render('forgotpassword', {user_id: tokenData._id});
+        } else {
+            res.render('404', {message: "Token is invalid."})
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const resetPassword = async(req, res)=>{
+    try {
+        const password = req.body.password;
+        const user_id = req.body.user_id;
+        const secure_password = await securePassword(password);
+
+        const updatedData = await User.findByIdAndUpdate({ _id: user_id}, {$set: {password: secure_password, token: ''} });
+        res.redirect("/");
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 module.exports = {
     loadRegister,
@@ -144,5 +247,10 @@ module.exports = {
     verifyMail,
     loginLoad,
     verifyLogin,
-    loadHome
+    loadHome,
+    userLogout,
+    forgotLoad,
+    forgotVerify,
+    forgotPasswordLoad,
+    resetPassword
 }

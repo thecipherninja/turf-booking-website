@@ -45,4 +45,14 @@ user_route.post('/login',userController.verifyLogin);
 
 user_route.get('/home',auth.isLogin, userController.loadHome);
 
+user_route.get('/logout',auth.isLogin, userController.userLogout);
+
+user_route.get('/forgot',auth.isLogout, userController.forgotLoad);
+
+user_route.post('/forgot', userController.forgotVerify);
+
+user_route.get('/forgotpassword', auth.isLogout, userController.forgotPasswordLoad);
+
+user_route.post('/forgotpassword', userController.resetPassword);
+
 module.exports = user_route;

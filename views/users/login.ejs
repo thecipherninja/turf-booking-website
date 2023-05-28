@@ -14,15 +14,6 @@
         
         <div class="form-inner">
 
-            <%
-                if(typeof message !== 'undefined') {
-                    %>
-                        <h4><%= message %></h4>
-                    <%
-                }
-
-            %>
-
             <!---- Login ---->
             <form action="/login" method="post" class="login">
                 <div class="field">
@@ -34,6 +25,16 @@
                 <div class="pass-link">
                     <a href="/register">Not a user? Register here</a>
                 </div>
+                <div class="pass-link">
+                    <a href="/forgot">Forgot password?</a>
+                </div>
+                <%
+                    if(typeof message !== 'undefined') {
+                        %>
+                            <h4><%= message %></h4>
+                        <%
+                    }
+                %>
                 <div class="field btn">
                     <div class="btn-layer"></div>
                     <input type="submit" value="Login">
@@ -50,19 +51,6 @@
     const signupBtn = document.querySelector("label.signup");
     const signupLink = document.querySelector("form .signup-link a");
 
-    // signupBtn.onclick = (()=>{
-    // loginForm.style.marginLeft = "-50%";
-    // loginText.style.marginLeft = "-50%";
-    // });
-    // loginBtn.onclick = (()=>{
-    // loginForm.style.marginLeft = "0%";
-    // loginText.style.marginLeft = "0%";
-    // });
-    // signupLink.onclick = (()=>{
-    // signupBtn.click();
-    // return false;
-    // });
-
     const passwordInput = document.querySelector('form.signup input[name="password"]');
     const confirmPasswordInput = document.querySelector('form.signup input[name="confirmpassword"]');
     const signUpButton = document.querySelector('form.signup input[type="submit"]');
@@ -71,19 +59,19 @@
     const loginPasswordInput = document.querySelector('form.login input[name="password"]');
 
     confirmPasswordInput.addEventListener('keyup', () => {
-    if (passwordInput.value !== confirmPasswordInput.value) {
-    confirmPasswordInput.setCustomValidity("Passwords don't match");
-    } else {
-    confirmPasswordInput.setCustomValidity('');
-    }
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            confirmPasswordInput.setCustomValidity("Passwords don't match");
+        } else {
+            confirmPasswordInput.setCustomValidity('');
+        }
     });
 
     signUpButton.addEventListener('click', () => {
-    if (passwordInput.value !== confirmPasswordInput.value) {
-    confirmPasswordInput.setCustomValidity("Passwords don't match");
-    } else {
-    confirmPasswordInput.setCustomValidity('');
-    }
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            confirmPasswordInput.setCustomValidity("Passwords don't match");
+        } else {
+            confirmPasswordInput.setCustomValidity('');
+        }
     });
 
 
