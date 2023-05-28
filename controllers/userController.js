@@ -241,6 +241,29 @@ const resetPassword = async(req, res)=>{
     }
 }
 
+const verificationLoad = async(req, res)=>{
+    try {
+        res.render('verification');
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const sendVerificationLink = async(req, res)=>{
+    try {
+        const email = req.body.email;
+        const userData = await User.findOne({ email: email });
+        if (userData) {
+            sendVerifyMail(userData.name, userData.email, userData._id);
+            res.render('verification', {message: "Reset verification has been sent to your email id."})
+        } else {
+            res.render('verification', {message: "This email does not exist."});
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 module.exports = {
     loadRegister,
     insertUser,
@@ -252,5 +275,7 @@ module.exports = {
     forgotLoad,
     forgotVerify,
     forgotPasswordLoad,
-    resetPassword
+    resetPassword,
+    verificationLoad,
+    sendVerificationLink
 }

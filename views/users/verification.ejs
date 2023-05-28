@@ -1,0 +1,45 @@
+<% include('../layouts/header.ejs') %>
+<% include('../../content/css/registration.css') %>
+<div class="wrapper">
+
+    <!---- Title Text ---->
+
+    <div class="title-text">
+       <div class="title login">
+          Verification
+       </div>
+    </div>
+
+    <div class="form-container">
+        
+        <div class="form-inner">
+
+            <!---- Login ---->
+            <form action="" method="post" class="verfification">
+                <div class="field">
+                    <input type="email" name="email" maxlength="30" placeholder="email">
+                </div>
+                <%
+                    if(typeof message !== 'undefined') {
+                        %>
+                            <h4><%= message %></h4>
+                        <%
+                    }
+                %>
+                <div class="field btn">
+                    <div class="btn-layer"></div>
+                    <input type="submit" value="Send Verification Link">
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+<script>
+    const loginText = document.querySelector(".title-text .login");
+    const loginForm = document.querySelector("form.login");
+    const loginBtn = document.querySelector("label.login");
+
+</script>
+
+<% include('../layouts/footer.ejs') %>
